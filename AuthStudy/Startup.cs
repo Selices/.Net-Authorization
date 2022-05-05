@@ -1,3 +1,4 @@
+using AuthStudy.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -33,9 +34,10 @@ namespace AuthStudy
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AuthStudy", Version = "v1" });
             });
-            string sercrt = Configuration.GetSection("sercrt").Value.ToString();
-            string issuer = Configuration.GetSection("issuer").Value.ToString();
-            string audience = Configuration.GetSection("audience").Value.ToString();
+            //加载配置
+            TokenModel tokenModel = Configuration.Get<TokenModel>();
+            //扩展方法
+            services.AddUserServices();
             services.AddAuthentication("Bearer").AddJwtBearer(options =>
             {
                 //指定验证类型为Bearer
@@ -45,15 +47,15 @@ namespace AuthStudy
                     //是否验证密钥
                     ValidateIssuerSigningKey = true,
                     //指定具体密钥
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(sercrt)),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenModel.sercrt)),
                     //是否指定颁发者
                     ValidateIssuer = true,
                     //指定颁发者
-                    ValidIssuer = issuer,
+                    ValidIssuer = tokenModel.issuer,
                     //是否指定接收者
                     ValidateAudience = true,
                     //指定接收者
-                    ValidAudience = audience,
+                    ValidAudience = tokenModel.audience,
                     //验证过期
                     RequireExpirationTime = true,
                     //必须验证超时
