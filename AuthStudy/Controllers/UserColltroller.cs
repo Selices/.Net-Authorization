@@ -52,7 +52,7 @@ namespace AuthStudy.Controllers
         private string GetToken(string UserId, string UserName) {
 
             //加载配置
-            //TokenModel tokenModel = _configuration.Get<TokenModel>();
+            TokenModel tokenModel = _configuration.Get<TokenModel>();
 
 
             /* //设置密钥
